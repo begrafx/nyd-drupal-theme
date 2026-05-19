@@ -1,0 +1,44 @@
+{#
+/**
+ * @file
+ * NydCSS Theme — field.html.twig
+ *
+ * Variables:
+ *   - label: Field label.
+ *   - label_display: Label display setting (above, inline, hidden, visually_hidden).
+ *   - items: Array of field item render arrays.
+ *   - entity_type, bundle, field_name, field_type: Field metadata.
+ *   - multiple: TRUE when there are more than one item (from preprocess).
+ */
+#}
+
+{% set classes = [
+  'field',
+  'field--name-' ~ field_name|clean_class,
+  'field--type-' ~ field_type|clean_class,
+  'field--label-' ~ label_display,
+  multiple ? 'field--multiple',
+] %}
+
+{% set title_classes = [
+  'field__label',
+  label_display == 'visually_hidden' ? 'visually-hidden',
+] %}
+
+<div{{ attributes.addClass(classes) }}>
+  {% if label_display != 'hidden' %}
+    <div{{ title_attributes.addClass(title_classes) }}>{{ label }}</div>
+  {% endif %}
+
+  {% if multiple %}
+    <div class="field__items">
+      {% for item in items %}
+        <div{{ item.attributes.addClass('field__item') }}>{{ item.content }}</div>
+      {% endfor %}
+    </div>
+  {% else %}
+    {% for item in items %}
+      <div{{ item.attributes.addClass('field__item') }}>{{ item.content }}</div>
+    {% endfor %}
+  {% endif %}
+</div>

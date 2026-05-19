@@ -1,0 +1,231 @@
+{#
+/**
+ * @file
+ * NydCSS Theme — page.html.twig
+ *
+ * Regions:
+ *   header         — Sticky glassmorphism header (logo + primary nav + actions)
+ *   primary_menu   — Main navigation (rendered inside header)
+ *   secondary_menu — Utility/account links (rendered in header actions)
+ *   hero           — Full-width hero banner below header
+ *   highlighted    — System messages / alerts bar
+ *   help           — Contextual help strip
+ *   breadcrumb     — Breadcrumb trail
+ *   content        — Primary page content (node, views, etc.)
+ *   sidebar_first  — Left sidebar
+ *   sidebar_second — Right sidebar
+ *   content_bottom — Full-width strip below the content grid
+ *   footer_first   — Footer column 1
+ *   footer_second  — Footer column 2
+ *   footer_third   — Footer column 3
+ *   footer_fourth  — Footer column 4
+ *   footer_bottom  — Copyright / bottom bar
+ *
+ * Variables set in nyd_preprocess_page():
+ *   has_sidebar_first, has_sidebar_second — booleans
+ *   site_name, site_slogan, logo_url
+ */
+#}
+
+{# Build sidebar modifier classes #}
+{% set layout_classes = ['site-layout'] %}
+{% if has_sidebar_first  %}{% set layout_classes = layout_classes|merge(['has-sidebar-first'])  %}{% endif %}
+{% if has_sidebar_second %}{% set layout_classes = layout_classes|merge(['has-sidebar-second']) %}{% endif %}
+
+<div id="page-wrapper">
+
+  {# ─── SKIP NAVIGATION ──────────────────────────────────────────────────── #}
+  <a href="#main-content" class="skip-link visually-hidden-focusable">
+    {{ 'Skip to main content'|t }}
+  </a>
+
+  {# ─── SITE HEADER ──────────────────────────────────────────────────────── #}
+  <header id="header" class="site-header" role="banner">
+
+    {# Branding #}
+    <a href="{{ path('<front>') }}" class="site-header__branding" rel="home" aria-label="{{ site_name }}">
+      {% if logo_url %}
+        <img src="{{ logo_url }}" alt="{{ site_name }}" class="site-header__logo">
+      {% endif %}
+      {% if site_name %}
+        <span class="site-header__site-name">{{ site_name }}</span>
+      {% endif %}
+    </a>
+
+    {# Primary navigation — desktop #}
+    {% if page.primary_menu %}
+      <nav class="site-nav" aria-label="{{ 'Main navigation'|t }}">
+        {{ page.primary_menu }}
+      </nav>
+    {% endif %}
+
+    <div class="site-header__spacer"></div>
+
+    {# Secondary / utility nav — actions area #}
+    <div class="site-header__actions">
+      {% if page.secondary_menu %}
+        {{ page.secondary_menu }}
+      {% endif %}
+
+      {# Optional dark-mode toggle — rendered if a block provides [data-nyd-theme-toggle] #}
+      {% if page.header %}
+        {{ page.header }}
+      {% endif %}
+    </div>
+
+    {# Mobile hamburger toggle #}
+    <button
+      class="site-header__menu-toggle"
+      aria-controls="mobile-nav"
+      aria-expanded="false"
+      aria-label="{{ 'Toggle navigation'|t }}"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+  </header>
+
+  {# ─── MOBILE NAVIGATION DRAWER ─────────────────────────────────────────── #}
+  {% if page.primary_menu or page.secondary_menu %}
+    <nav id="mobile-nav" class="site-header__mobile-nav" aria-label="{{ 'Mobile navigation'|t }}" aria-hidden="true">
+      {{ page.primary_menu }}
+      {{ page.secondary_menu }}
+    </nav>
+  {% endif %}
+
+  {# ─── HERO REGION ──────────────────────────────────────────────────────── #}
+  {% if page.hero %}
+    <section class="site-hero" aria-label="{{ 'Hero'|t }}">
+      <div class="site-hero__inner">
+        {{ page.hero }}
+      </div>
+    </section>
+  {% endif %}
+
+  {# ─── HIGHLIGHTED (messages / alerts) ─────────────────────────────────── #}
+  {% if page.highlighted %}
+    <div class="site-highlighted" role="alert" aria-live="polite">
+      <div class="container">
+        {{ page.highlighted }}
+      </div>
+    </div>
+  {% endif %}
+
+  {# ─── HELP ─────────────────────────────────────────────────────────────── #}
+  {% if page.help %}
+    <div class="site-help">
+      <div class="container">
+        {{ page.help }}
+      </div>
+    </div>
+  {% endif %}
+
+  {# ─── BREADCRUMB ───────────────────────────────────────────────────────── #}
+  {% if page.breadcrumb %}
+    <div class="site-breadcrumb-bar" aria-label="{{ 'Breadcrumb'|t }}">
+      <nav>
+        {{ page.breadcrumb }}
+      </nav>
+    </div>
+  {% endif %}
+
+  {# ─── LOCAL TASKS (edit/delete/etc tabs) ──────────────────────────────── #}
+
+  {# ─── MAIN CONTENT + SIDEBARS ─────────────────────────────────────────── #}
+  <main id="main-content" class="site-main" tabindex="-1" aria-label="{{ 'Main content'|t }}">
+    <div class="container">
+
+      <div class="{{ layout_classes|join(' ') }}">
+
+        {# Sidebar First (left) #}
+        {% if page.sidebar_first %}
+          <aside id="sidebar-first" class="site-sidebar site-sidebar--first" aria-label="{{ 'Sidebar first'|t }}">
+            {{ page.sidebar_first }}
+          </aside>
+        {% endif %}
+
+        {# Content #}
+        <div id="content" class="site-content">
+          {{ page.content }}
+        </div>
+
+        {# Sidebar Second (right) #}
+        {% if page.sidebar_second %}
+          <aside id="sidebar-second" class="site-sidebar site-sidebar--second" aria-label="{{ 'Sidebar second'|t }}">
+            {{ page.sidebar_second }}
+          </aside>
+        {% endif %}
+
+      </div>{# /.site-layout #}
+    </div>{# /.container #}
+  </main>
+
+  {# ─── CONTENT BOTTOM ───────────────────────────────────────────────────── #}
+  {% if page.content_bottom %}
+    <section class="site-content-bottom">
+      <div class="container">
+        {{ page.content_bottom }}
+      </div>
+    </section>
+  {% endif %}
+
+  {# ─── FOOTER ───────────────────────────────────────────────────────────── #}
+  <footer id="footer" class="site-footer" role="contentinfo">
+
+    {# Four-column footer columns — only render when at least one has content #}
+    {% if page.footer_first or page.footer_second or page.footer_third or page.footer_fourth %}
+      <div class="site-footer__columns">
+
+        {# Column 1 — Brand / about #}
+        {% if page.footer_first %}
+          <div class="site-footer__col">
+            {{ page.footer_first }}
+          </div>
+        {% endif %}
+
+        {# Column 2 #}
+        {% if page.footer_second %}
+          <div class="site-footer__col">
+            {{ page.footer_second }}
+          </div>
+        {% endif %}
+
+        {# Column 3 #}
+        {% if page.footer_third %}
+          <div class="site-footer__col">
+            {{ page.footer_third }}
+          </div>
+        {% endif %}
+
+        {# Column 4 #}
+        {% if page.footer_fourth %}
+          <div class="site-footer__col">
+            {{ page.footer_fourth }}
+          </div>
+        {% endif %}
+
+      </div>{# /.site-footer__columns #}
+    {% endif %}
+
+    {# Divider #}
+    {% if page.footer_first or page.footer_second or page.footer_third or page.footer_fourth %}
+      <div class="site-footer__divider"></div>
+    {% endif %}
+
+    {# Footer bottom — copyright, legal links #}
+    <div class="site-footer__bottom">
+      <div class="site-footer__bottom-left">
+        &copy; {{ "now"|date("Y") }} {{ site_name }}. {{ 'All rights reserved.'|t }}
+      </div>
+      {% if page.footer_bottom %}
+        <div class="site-footer__bottom-right">
+          {{ page.footer_bottom }}
+        </div>
+      {% endif %}
+    </div>
+
+  </footer>
+
+</div>{# /#page-wrapper #}

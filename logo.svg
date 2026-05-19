@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40" fill="none">
+  <!-- NydCSS Theme default logo mark -->
+  <!-- Replace with your own logo asset -->
+  <rect x="0" y="8" width="24" height="24" rx="4" fill="#d97706"/>
+  <rect x="6" y="14" width="12" height="12" rx="2" fill="#ffffff" opacity="0.9"/>
+  <text
+    x="32" y="27"
+    font-family="Georgia, serif"
+    font-size="18"
+    font-weight="700"
+    letter-spacing="-0.5"
+    fill="#ffffff"
+  >Site</text>
+</svg>

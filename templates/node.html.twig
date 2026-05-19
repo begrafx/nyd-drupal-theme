@@ -1,0 +1,95 @@
+{#
+/**
+ * @file
+ * NydCSS Theme — node.html.twig
+ *
+ * Variables:
+ *   - node: The node entity.
+ *   - node_type: Node bundle/type string (from preprocess).
+ *   - label: The node title.
+ *   - content: Rendered fields.
+ *   - author_picture, author_name, date: Authoring metadata.
+ *   - display_submitted: Whether to show metadata.
+ *   - view_mode: Current view mode (full, teaser, etc.)
+ *   - url: Node canonical URL.
+ */
+#}
+
+{% set classes = [
+  'node',
+  'node--type-' ~ node.bundle,
+  'node--view-mode-' ~ view_mode|clean_class,
+  not node.isPublished() ? 'node--unpublished',
+  view_mode == 'full' ? 'node--full',
+] %}
+
+<article{{ attributes.addClass(classes) }}>
+
+  {# ─── Full-view header ─────────────────────────────────────────────────── #}
+  {% if view_mode == 'full' %}
+    <header class="node__header">
+      <h1{{ title_attributes.addClass('node__title') }}>{{ label }}</h1>
+
+      {% if display_submitted %}
+        <div class="node__meta">
+          {% if author_picture %}
+            <div class="node__author-picture">{{ author_picture }}</div>
+          {% endif %}
+          <span class="node__submitted">
+            {{ 'By'|t }} <strong>{{ author_name }}</strong>
+          </span>
+          {% if date %}
+            <span class="node__date">
+              <time datetime="{{ node.getCreatedTime()|date('c') }}">{{ date }}</time>
+            </span>
+          {% endif %}
+          {% if node.bundle == 'article' and content.field_tags is defined %}
+            <div class="node__tags cluster">{{ content.field_tags }}</div>
+          {% endif %}
+        </div>
+      {% endif %}
+    </header>
+  {% endif %}
+
+  {# ─── Teaser header ────────────────────────────────────────────────────── #}
+  {% if view_mode == 'teaser' %}
+    {% if content.field_image is defined %}
+      <div class="node__media">
+        {{ content.field_image }}
+      </div>
+    {% endif %}
+    <div class="node__content">
+      {{ title_prefix }}
+      <h2{{ title_attributes.addClass('node__title') }}>
+        <a href="{{ url }}" rel="bookmark">{{ label }}</a>
+      </h2>
+      {{ title_suffix }}
+
+      {% if display_submitted %}
+        <div class="node__meta">
+          <span class="node__submitted">{{ author_name }}</span>
+          {% if date %}
+            <span class="node__date">{{ date }}</span>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {{ content|without('field_image', 'links') }}
+
+      {% if content.links %}
+        <div class="node__links">{{ content.links }}</div>
+      {% endif %}
+    </div>
+  {% else %}
+    {# Full / other view modes #}
+    {{ title_prefix }}
+    {{ title_suffix }}
+    <div{{ content_attributes.addClass('node__content') }}>
+      {{ content|without('links') }}
+    </div>
+    {% if content.links %}
+      <div class="node__links">{{ content.links }}</div>
+    {% endif %}
+  {% endif %}
+
+</article>

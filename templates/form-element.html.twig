@@ -1,0 +1,70 @@
+{#
+/**
+ * @file
+ * NydCSS Theme — form-element.html.twig
+ *
+ * Variables:
+ *   - label: Form element label.
+ *   - description: Help text.
+ *   - children: The form widget.
+ *   - type: Element type (text, checkbox, radio, etc.)
+ *   - disabled, required: State booleans.
+ *   - errors: Validation error messages.
+ */
+#}
+
+{%
+  set classes = [
+    'form-item',
+    'form-type-' ~ type|clean_class,
+    'form-item-' ~ name|clean_class,
+    type in ['checkbox', 'radio'] ? 'form-item--inline',
+    required ? 'form-item--required',
+    errors ? 'form-item--error',
+    disabled ? 'form-item--disabled',
+  ]
+%}
+
+{% set description_id = description.attributes.id ?? '' %}
+{% set description_allowed_attributes = ['id'] %}
+
+<div{{ attributes.addClass(classes) }}>
+
+  {# Label above the widget (default for most input types) #}
+  {% if label_display == 'before' %}
+    {{ label }}
+  {% endif %}
+
+  {# Prefix (e.g. currency symbol) #}
+  {% if prefix is not empty %}
+    <span class="field-prefix">{{ prefix }}</span>
+  {% endif %}
+
+  {# The actual widget #}
+  {{ children }}
+
+  {# Suffix #}
+  {% if suffix is not empty %}
+    <span class="field-suffix">{{ suffix }}</span>
+  {% endif %}
+
+  {# Label after (checkbox, radio) #}
+  {% if label_display == 'after' %}
+    {{ label }}
+  {% endif %}
+
+  {# Errors #}
+  {% if errors %}
+    <div class="form-item__error-message" role="alert">
+      <strong>{{ errors }}</strong>
+    </div>
+  {% endif %}
+
+  {# Description / help text #}
+  {% if description.content %}
+    <div{{ description.attributes.addClass('form-item__description description') }}>
+      {{ description.content }}
+    </div>
+  {% endif %}
+
+</div>

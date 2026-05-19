@@ -1,0 +1,130 @@
+{#
+/**
+ * @file
+ * NydCSS Theme — page--front.html.twig
+ *
+ * Front-page variant. Extends the default page layout with:
+ *   - Hero always rendered (even when hero region is empty, a default placeholder is shown)
+ *   - No breadcrumb
+ *   - Full-width content (no sidebars by default on front page)
+ */
+#}
+
+{# Front page never shows sidebars unless explicitly configured #}
+{% set has_sidebar_first  = false %}
+{% set has_sidebar_second = false %}
+
+<div id="page-wrapper" class="page--front">
+
+  {# ─── SKIP LINK ────────────────────────────────────────────────────────── #}
+  <a href="#main-content" class="skip-link visually-hidden-focusable">
+    {{ 'Skip to main content'|t }}
+  </a>
+
+  {# ─── SITE HEADER ──────────────────────────────────────────────────────── #}
+  <header id="header" class="site-header" role="banner">
+    <a href="{{ path('<front>') }}" class="site-header__branding" rel="home" aria-label="{{ site_name }}">
+      {% if logo_url %}
+        <img src="{{ logo_url }}" alt="{{ site_name }}" class="site-header__logo">
+      {% endif %}
+      {% if site_name %}
+        <span class="site-header__site-name">{{ site_name }}</span>
+      {% endif %}
+    </a>
+
+    {% if page.primary_menu %}
+      <nav class="site-nav" aria-label="{{ 'Main navigation'|t }}">
+        {{ page.primary_menu }}
+      </nav>
+    {% endif %}
+
+    <div class="site-header__spacer"></div>
+
+    <div class="site-header__actions">
+      {% if page.secondary_menu %}{{ page.secondary_menu }}{% endif %}
+      {% if page.header %}{{ page.header }}{% endif %}
+    </div>
+
+    <button
+      class="site-header__menu-toggle"
+      aria-controls="mobile-nav"
+      aria-expanded="false"
+      aria-label="{{ 'Toggle navigation'|t }}"
+    >
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  {# ─── MOBILE DRAWER ────────────────────────────────────────────────────── #}
+  {% if page.primary_menu or page.secondary_menu %}
+    <nav id="mobile-nav" class="site-header__mobile-nav" aria-label="{{ 'Mobile navigation'|t }}" aria-hidden="true">
+      {{ page.primary_menu }}
+      {{ page.secondary_menu }}
+    </nav>
+  {% endif %}
+
+  {# ─── HERO — always shown on front page ───────────────────────────────── #}
+  <section class="site-hero" aria-label="{{ 'Hero'|t }}">
+    <div class="site-hero__inner">
+      {% if page.hero %}
+        {{ page.hero }}
+      {% else %}
+        {# Fallback hero when no block is placed in the region #}
+        <p class="site-hero__eyebrow">{{ site_slogan }}</p>
+        <h1>{{ site_name }}</h1>
+        <p>{{ 'Welcome. Add content to the Hero region to customize this banner.'|t }}</p>
+      {% endif %}
+    </div>
+  </section>
+
+  {# ─── HIGHLIGHTED ──────────────────────────────────────────────────────── #}
+  {% if page.highlighted %}
+    <div class="site-highlighted" role="alert" aria-live="polite">
+      <div class="container">{{ page.highlighted }}</div>
+    </div>
+  {% endif %}
+
+  {% if page.help %}
+    <div class="site-help">
+      <div class="container">{{ page.help }}</div>
+    </div>
+  {% endif %}
+
+  {# ─── MAIN CONTENT ─────────────────────────────────────────────────────── #}
+  <main id="main-content" class="site-main" tabindex="-1" aria-label="{{ 'Main content'|t }}">
+    <div class="container">
+      <div class="site-layout">
+        <div id="content" class="site-content">
+          {{ page.content }}
+        </div>
+      </div>
+    </div>
+  </main>
+
+  {# ─── CONTENT BOTTOM ───────────────────────────────────────────────────── #}
+  {% if page.content_bottom %}
+    <section class="site-content-bottom">
+      <div class="container">{{ page.content_bottom }}</div>
+    </section>
+  {% endif %}
+
+  {# ─── FOOTER ───────────────────────────────────────────────────────────── #}
+  <footer id="footer" class="site-footer" role="contentinfo">
+    {% if page.footer_first or page.footer_second or page.footer_third or page.footer_fourth %}
+      <div class="site-footer__columns">
+        {% if page.footer_first %}<div class="site-footer__col">{{ page.footer_first }}</div>{% endif %}
+        {% if page.footer_second %}<div class="site-footer__col">{{ page.footer_second }}</div>{% endif %}
+        {% if page.footer_third %}<div class="site-footer__col">{{ page.footer_third }}</div>{% endif %}
+        {% if page.footer_fourth %}<div class="site-footer__col">{{ page.footer_fourth }}</div>{% endif %}
+      </div>
+      <div class="site-footer__divider"></div>
+    {% endif %}
+    <div class="site-footer__bottom">
+      <div class="site-footer__bottom-left">&copy; {{ "now"|date("Y") }} {{ site_name }}. {{ 'All rights reserved.'|t }}</div>
+      {% if page.footer_bottom %}
+        <div class="site-footer__bottom-right">{{ page.footer_bottom }}</div>
+      {% endif %}
+    </div>
+  </footer>
+
+</div>{# /#page-wrapper #}

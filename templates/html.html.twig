@@ -1,0 +1,35 @@
+{#
+/**
+ * @file
+ * NydCSS Theme — html.html.twig
+ *
+ * Available variables:
+ *   - logged_in: TRUE if the user is logged in.
+ *   - root_path: The root path of the current page (e.g. 'node').
+ *   - node_type: The content type for the node, if applicable.
+ *   - head_title: Array of title parts for the <title> tag.
+ *   - page_top: Initial markup from any modules that have altered the page top.
+ *   - page_bottom: Final markup from any modules that have altered the page bottom.
+ *   - styles: Style tags necessary to render the page.
+ *   - scripts: Script tags necessary to render the page.
+ *   - attributes: HTML element attributes, including lang and dir.
+ */
+#}
+<!DOCTYPE html>
+<html{{ attributes }}>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ head_title|safe_join(' | ') }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    {{ head }}
+    {{ styles }}
+  </head>
+  <body{{ attributes.addClass(logged_in ? 'user-logged-in' : '') }}>
+    {{ page_top }}
+    {{ page }}
+    {{ page_bottom }}
+    {{ scripts }}
+  </body>
+</html>

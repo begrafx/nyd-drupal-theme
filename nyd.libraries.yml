@@ -1,0 +1,27 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# NydCSS Theme — Libraries
+# ──────────────────────────────────────────────────────────────────────────────
+
+# Main library — loaded on every page
+global:
+  version: 1.x
+  css:
+    base:
+      # Google Fonts: Playfair Display (display) + DM Sans (body)
+      'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap':
+        { type: external, minified: true }
+    theme:
+      dist/nyd.min.css: { minified: true }
+      css/nyd.theme.css: {}
+  js:
+    js/nyd.behaviors.js: { minified: false }
+  dependencies:
+    - core/drupal
+    - core/once
+
+# Toolbar offset helper (loaded when admin toolbar is present)
+admin-toolbar-fix:
+  version: 1.x
+  css:
+    theme:
+      css/nyd.toolbar.css: {}

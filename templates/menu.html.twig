@@ -1,0 +1,48 @@
+{#
+/**
+ * @file
+ * NydCSS Theme — menu.html.twig
+ *
+ * Renders a generic navigation menu as a nested <ul>.
+ * Uses nyd .site-nav-friendly ul/li/a styling automatically via context.
+ */
+#}
+
+{% import _self as menus %}
+
+{#
+  Macro: menu_links
+  Recursively renders menu items.
+#}
+{% macro menu_links(items, attributes, menu_level) %}
+  {% import _self as menus %}
+  {% if items %}
+    {% if menu_level == 0 %}
+      <ul{{ attributes }}>
+    {% else %}
+      <ul>
+    {% endif %}
+    {% for item in items %}
+      {% set item_classes = [
+        'menu-item',
+        item.is_expanded ? 'menu-item--expanded',
+        item.is_collapsed ? 'menu-item--collapsed',
+        item.in_active_trail ? 'menu-item--active-trail',
+        item.below ? 'menu-item--has-children',
+      ] %}
+      <li{{ item.attributes.addClass(item_classes) }}>
+        {{ link(item.title, item.url, {
+          'class': [item.in_active_trail ? 'is-active'],
+        }) }}
+        {% if item.below %}
+          {{ menus.menu_links(item.below, attributes, menu_level + 1) }}
+        {% endif %}
+      </li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endmacro %}
+
+<nav{{ attributes.addClass('menu') }}>
+  {{ menus.menu_links(items, attributes, 0) }}
+</nav>

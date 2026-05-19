@@ -1,0 +1,27 @@
+{#
+/**
+ * @file
+ * NydCSS Theme — breadcrumb.html.twig
+ *
+ * Uses NydCSS .breadcrumb component.
+ *
+ * Variables:
+ *   - breadcrumb: List of breadcrumb items, each with keys: text, url.
+ */
+#}
+
+{% if breadcrumb %}
+  <nav aria-label="{{ 'Breadcrumb'|t }}" role="navigation">
+    <ol class="breadcrumb">
+      {% for item in breadcrumb %}
+        <li{{ item.attributes }}>
+          {% if item.url %}
+            <a href="{{ item.url }}">{{ item.text }}</a>
+          {% else %}
+            {{ item.text }}
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ol>
+  </nav>
+{% endif %}

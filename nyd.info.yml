@@ -1,0 +1,44 @@
+name: 'NydCSS Theme'
+type: theme
+description: 'A modern, full-featured Drupal 11 theme built on NydCSS — composable utility-first design with editorial refinement, optional sidebars, hero region, and responsive mobile navigation.'
+package: Custom
+core_version_requirement: ^10.3 || ^11
+
+libraries:
+  - nyd/global
+
+libraries-override:
+  # Remove Drupal core normalize — nyd-reset.css handles it
+  core/normalize: false
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Regions
+# ──────────────────────────────────────────────────────────────────────────────
+regions:
+  header:         'Header'
+  primary_menu:   'Primary Menu'
+  secondary_menu: 'Secondary Menu'
+  hero:           'Hero'
+  highlighted:    'Highlighted'
+  help:           'Help'
+  breadcrumb:     'Breadcrumb'
+  content:        'Content'
+  sidebar_first:  'Sidebar First'
+  sidebar_second: 'Sidebar Second'
+  content_bottom: 'Content Bottom'
+  footer_first:   'Footer First'
+  footer_second:  'Footer Second'
+  footer_third:   'Footer Third'
+  footer_fourth:  'Footer Fourth'
+  footer_bottom:  'Footer Bottom'
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Features
+# ──────────────────────────────────────────────────────────────────────────────
+features:
+  - logo
+  - favicon
+  - node_user_picture
+
+logo: logo.svg
+screenshot: screenshot.png

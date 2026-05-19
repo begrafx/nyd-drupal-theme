@@ -1,0 +1,25 @@
+/*
+ * NydCSS Theme — Toolbar offset helpers
+ * Applied only when Drupal's toolbar module is active.
+ */
+
+:root {
+  --toolbar-height: 39px;
+}
+
+body.toolbar-fixed {
+  padding-top: var(--toolbar-height) !important;
+}
+
+body.toolbar-fixed .site-header {
+  top: var(--toolbar-height);
+}
+
+body.toolbar-fixed.toolbar-tray-open {
+  --toolbar-height: 79px;
+}
+
+/* Offset sticky hero behind admin bar */
+body.toolbar-fixed .site-hero {
+  /* No adjustment needed — hero is not sticky */
+}

@@ -1,0 +1,38 @@
+{#
+/**
+ * @file
+ * NydCSS Theme — input.html.twig
+ *
+ * Applies NydCSS form input classes based on element type.
+ */
+#}
+
+{% if type == 'submit' or type == 'button' or type == 'reset' or type == 'image' %}
+  {%
+    set classes = [
+      'btn',
+      type == 'submit' ? 'btn-primary form-submit',
+      type == 'reset'  ? 'btn-secondary',
+      type == 'button' ? 'btn-secondary',
+    ]
+  %}
+  <input{{ attributes.addClass(classes) }}>
+{% elseif type == 'checkbox' or type == 'radio' %}
+  <input{{ attributes }}>
+{% else %}
+  {%
+    set classes = [
+      'input',
+      type == 'text'     ? 'form-text',
+      type == 'email'    ? 'form-email',
+      type == 'url'      ? 'form-url',
+      type == 'number'   ? 'form-number',
+      type == 'tel'      ? 'form-tel',
+      type == 'date'     ? 'form-date',
+      type == 'search'   ? 'form-search',
+      type == 'password' ? 'form-password',
+      type == 'file'     ? 'form-file',
+    ]
+  %}
+  <input{{ attributes.addClass(classes) }}>
+{% endif %}

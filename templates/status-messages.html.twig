@@ -1,0 +1,60 @@
+{#
+/**
+ * @file
+ * NydCSS Theme — status-messages.html.twig
+ *
+ * Maps Drupal message types to NydCSS .alert variants:
+ *   status  → alert-success
+ *   warning → alert-warning
+ *   error   → alert-danger
+ *   info    → alert-info
+ *
+ * Variables:
+ *   - message_list: Array of messages keyed by type.
+ *   - status_headings: Human-readable labels for each type.
+ */
+#}
+
+{% if message_list %}
+  <div class="messages-list" aria-label="{{ 'Site messages'|t }}">
+    {% for type, messages in message_list %}
+      {% set alert_variant = {
+        'status':  'alert-success',
+        'warning': 'alert-warning',
+        'error':   'alert-danger',
+        'info':    'alert-info',
+      }[type] ?? 'alert-info' %}
+
+      {% set icon = {
+        'status':  '✓',
+        'warning': '⚠',
+        'error':   '✕',
+        'info':    'ℹ',
+      }[type] ?? 'ℹ' %}
+
+      <div
+        class="messages messages--{{ type }} alert {{ alert_variant }}"
+        role="{{ type == 'error' ? 'alert' : 'status' }}"
+        aria-live="{{ type == 'error' ? 'assertive' : 'polite' }}"
+        data-drupal-messages
+      >
+        <div class="alert-icon" aria-hidden="true">{{ icon }}</div>
+        <div class="alert-content">
+          {% if status_headings[type] %}
+            <p class="alert-title">{{ status_headings[type] }}</p>
+          {% endif %}
+          {% if messages|length > 1 %}
+            <ul class="messages__list">
+              {% for message in messages %}
+                <li class="messages__item">{{ message }}</li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="messages__item">{{ messages|first }}</p>
+          {% endif %}
+        </div>
+        <button class="messages__close btn btn-ghost btn-sm" aria-label="{{ 'Dismiss message'|t }}">✕</button>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}

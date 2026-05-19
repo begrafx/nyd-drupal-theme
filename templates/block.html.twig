@@ -1,0 +1,34 @@
+{#
+/**
+ * @file
+ * NydCSS Theme — block.html.twig
+ *
+ * Variables:
+ *   - plugin_id: The block plugin ID.
+ *   - label: Block label (if configured to show).
+ *   - content: The rendered block content.
+ *   - attributes: Wrapper element attributes.
+ *   - title_attributes: Title element attributes.
+ */
+#}
+
+{% set classes = [
+  'block',
+  'block-' ~ configuration.provider|clean_class,
+  'block-' ~ plugin_id|clean_class,
+  plugin_id_class is defined ? plugin_id_class,
+] %}
+
+<div{{ attributes.addClass(classes) }}>
+
+  {{ title_prefix }}
+  {% if label %}
+    <h2{{ title_attributes.addClass('block__title') }}>{{ label }}</h2>
+  {% endif %}
+  {{ title_suffix }}
+
+  {% block content %}
+    {{ content }}
+  {% endblock %}
+
+</div>

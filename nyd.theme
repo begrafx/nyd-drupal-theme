@@ -1,0 +1,184 @@
+<?php
+
+/**
+ * @file
+ * NydCSS Theme — theme.php
+ * Preprocess hooks, theme suggestions, library attachments.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Element;
+
+// ──────────────────────────────────────────────────────────────────────────────
+// html.html.twig
+// ──────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Implements hook_preprocess_HOOK() for html.html.twig.
+ */
+function nyd_preprocess_html(array &$variables): void {
+  // Add classes based on path and node type.
+  $route_match = \Drupal::routeMatch();
+
+  if ($node = $route_match->getParameter('node')) {
+    $variables['attributes']['class'][] = 'node-type--' . $node->bundle();
+  }
+
+  // Expose current path as a body class.
+  $current_path = \Drupal::service('path.current')->getPath();
+  $alias = \Drupal::service('path_alias.manager')->getAliasByPath($current_path);
+  $alias = ltrim($alias, '/');
+  if ($alias) {
+    $variables['attributes']['class'][] = 'path--' . preg_replace('/[^a-z0-9]/', '-', strtolower($alias));
+  }
+
+  // Front page class.
+  if (\Drupal::service('path.matcher')->isFrontPage()) {
+    $variables['attributes']['class'][] = 'path--front';
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// page.html.twig
+// ──────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Implements hook_preprocess_HOOK() for page.html.twig.
+ */
+function nyd_preprocess_page(array &$variables): void {
+  // Sidebar layout flags used in the Twig template.
+  $variables['has_sidebar_first']  = !empty($variables['page']['sidebar_first']);
+  $variables['has_sidebar_second'] = !empty($variables['page']['sidebar_second']);
+
+  // Site name + slogan for the header.
+  $site_config = \Drupal::config('system.site');
+  $variables['site_name']   = $site_config->get('name');
+  $variables['site_slogan'] = $site_config->get('slogan');
+
+  // Logo URL.
+  $variables['logo_url'] = \Drupal::service('file_url_generator')
+    ->generateString(theme_get_setting('logo.url'));
+
+  // Active theme path (for asset references inside Twig).
+  $variables['active_theme_path'] = \Drupal::service('extension.list.theme')
+    ->getPath('nyd');
+
+  // Attach admin toolbar offset fix when toolbar module is enabled.
+  if (\Drupal::moduleHandler()->moduleExists('toolbar')) {
+    $variables['#attached']['library'][] = 'nyd/admin-toolbar-fix';
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// node.html.twig
+// ──────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Implements hook_preprocess_HOOK() for node.html.twig.
+ */
+function nyd_preprocess_node(array &$variables): void {
+  $node = $variables['node'];
+  $variables['node_type'] = $node->bundle();
+  $variables['display_submitted'] = $variables['display_submitted'] ?? TRUE;
+
+  // Formatted date.
+  $variables['date'] = \Drupal::service('date.formatter')
+    ->format($node->getCreatedTime(), 'medium');
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// block.html.twig
+// ──────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Implements hook_preprocess_HOOK() for block.html.twig.
+ */
+function nyd_preprocess_block(array &$variables): void {
+  // Expose plugin_id as a template variable for easier targeting.
+  if (!empty($variables['plugin_id'])) {
+    $variables['plugin_id_class'] = 'block--' . preg_replace('/[^a-z0-9]/', '-', strtolower($variables['plugin_id']));
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// field.html.twig
+// ──────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Implements hook_preprocess_HOOK() for field.html.twig.
+ */
+function nyd_preprocess_field(array &$variables): void {
+  // Add a modifier class when a field has multiple values.
+  $variables['multiple'] = count(Element::children($variables['items'])) > 1;
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// status_messages.html.twig
+// ──────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Implements hook_preprocess_HOOK() for status-messages.html.twig.
+ *
+ * Maps Drupal message types to NydCSS alert variants.
+ */
+function nyd_preprocess_status_messages(array &$variables): void {
+  $variables['nyd_alert_map'] = [
+    'status'  => 'alert-success',
+    'warning' => 'alert-warning',
+    'error'   => 'alert-danger',
+    'info'    => 'alert-info',
+  ];
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// form element
+// ──────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Implements hook_preprocess_HOOK() for form-element.html.twig.
+ */
+function nyd_preprocess_form_element(array &$variables): void {
+  // Pass field description state to template for layout decisions.
+  $variables['has_description'] = !empty($variables['description']['content']);
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Theme suggestions
+// ──────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter() for page templates.
+ */
+function nyd_theme_suggestions_page_alter(array &$suggestions, array $variables): void {
+  // Add page--node-TYPE suggestion.
+  $node = \Drupal::routeMatch()->getParameter('node');
+  if ($node) {
+    $suggestions[] = 'page__node__' . $node->bundle();
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter() for block templates.
+ */
+function nyd_theme_suggestions_block_alter(array &$suggestions, array $variables): void {
+  // Suggest block--REGION--ID.
+  if (!empty($variables['elements']['#id'])) {
+    $block = \Drupal\block\Entity\Block::load($variables['elements']['#id']);
+    if ($block) {
+      $region = $block->getRegion();
+      $suggestions[] = 'block__' . $region;
+      $suggestions[] = 'block__' . $region . '__' . $variables['elements']['#id'];
+    }
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter() for node templates.
+ */
+function nyd_theme_suggestions_node_alter(array &$suggestions, array $variables): void {
+  /** @var \Drupal\node\NodeInterface $node */
+  $node = $variables['elements']['#node'];
+  $view_mode = $variables['elements']['#view_mode'];
+  $suggestions[] = 'node__' . $view_mode;
+  $suggestions[] = 'node__' . $node->bundle() . '__' . $view_mode;
+}

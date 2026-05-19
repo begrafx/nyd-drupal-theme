@@ -3,6 +3,7 @@ type: theme
 description: 'A modern, full-featured Drupal 11 theme built on NydCSS — composable utility-first design with editorial refinement, optional sidebars, hero region, and responsive mobile navigation.'
 package: Custom
 core_version_requirement: ^10.3 || ^11
+base theme: false
 
 libraries:
   - nyd/global
